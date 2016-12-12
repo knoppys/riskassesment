@@ -1,0 +1,234 @@
+/*
+Theme Name: Knoppys Base Wordpress Theme
+Theme URI: http://www.knoppys.co.uk;
+Author: Knoppys Digital Limited
+Author URI: www.knoppys.co.uk
+Description: Our own general purpose wordpress theme
+Version: 3
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+*/
+h1, h2, h3, h4, h5, h6, strong, span, {
+    font-family: "Oswald",sans-serif;
+    line-height: 1.5;
+}
+body {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    background: #ea2f4f;
+}
+a {
+    color: #b4192d;
+    text-decoration: none;
+}
+.home-login input {
+    display: block;
+    border-radius: 3px;
+    border: 1px solid #d2d2d2;
+    line-height: 27px;
+    margin: 0 auto;
+    width: 200px;
+}
+.home-login {
+	color: #fff;
+}
+.home-login input[type="checkbox" i] {
+    display: none;
+}
+
+#rememberme {
+    display: none;
+}
+
+p.login-remember {
+    display: none;
+}
+.home-login input {
+    margin-bottom: 18px;
+    /* color: #b72841; */
+}
+.home-login label {
+    font-size: 20px;
+    font-weight: normal;
+}
+section.home-login {
+    padding: 8% 0px;
+    color: #efefef;
+}
+form#loginform, #registerform {
+    border: 3px solid #b4192d;
+    color: #333;
+    margin: 0 auto;
+    padding: 8% 0;
+    text-align: center;
+    width: 100%;
+    background: #efefef;
+}
+.registerlink {
+    text-align: center;
+    padding: 10px 0;
+}
+
+.registerlink .btn {
+    background: transparent;
+    border: 1px solid #efefef;
+    width: 100%;
+    border-radius: 0px;
+}
+.home-login #wp-submit, .wpcf7-submit {
+    background: #ea2f4f;
+    color: #fff;
+    border: 2px solid #b4192d;
+}
+
+.wpcf7-form input {
+    width: 200px;
+    margin: 0 auto;
+}
+
+div#registerform {
+    text-align: center;
+}
+#registerform {
+    display: none;
+}
+div.wpcf7-mail-sent-ok {
+    text-align: center;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    width: 100%;
+    padding: 4% 0;
+}
+div.wpcf7-response-output {
+    margin: 0;
+}
+span.wpcf7-not-valid-tip {
+    color: #fff;
+    font-size: 12px;
+    display: block;
+}
+.navbar-brand>img {
+    height: 100%;
+}
+.logo img{
+	width: 100%;
+	max-width: 300px;
+}
+.dropdown {
+    float: right;
+    padding: 15px 0;
+}
+a.dropdown-item, .menu-item a {
+    display: block;
+    padding: 5px 10px;
+    color: inherit;
+}
+
+button#dropdownMenuButton {
+    background: #b4192d;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 0px;
+}
+.dropdown-menu {
+    border: 3px solid #b4192d;
+    width: 214px;
+    padding: 25px 5px;
+    box-shadow: 2px 3px 8px #333;
+    border-radius: 0px;
+    left: -122px;
+}
+.dropdown-divider {
+    display: block;
+    border-top: 1px solid #d2d2d2;
+    margin: 8px 0px;
+}
+ul#menu-primary {
+    margin: 0;
+    padding: 0;
+}
+
+.menu-item {
+    list-style: none;
+}
+a.dropdown-item.drop-down-header, a.logout {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.content-body {
+    background: #efefef;
+    padding: 5%;
+    border: 3px solid #b4192d;
+}
+.dropdown-menu i {
+    padding-right: 5px;
+}
+.post-image i {
+    font-size: 102px;
+}
+
+.post-image img {
+    width: 100%;
+    height: auto;
+}
+.archive-title {
+    border-bottom: 1px solid #b4192d;
+    padding-bottom: 22px;
+    margin-bottom: 27px;
+}
+a.drop-down-header, a.logout {
+    color: #b4192d;
+}
+.download-link {
+    padding: 33px 0;
+}
+.row.post-entry {
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+header {
+    border-bottom: 3px solid #b4192d;
+    background: #fff;
+    margin-bottom: 50px;
+}
+
+.post-image .btn {
+    border: 1px solid #b4192d;
+    background: #b4192d;
+    border-radius: 0px;
+    margin: 10px 0;
+}
+.content-body header {
+    background: transparent;
+    margin-bottom: 30px;
+}
+.post-entry {border-bottom: 1px solid#e2e2e2;margin-bottom: 10px;}
+input#searchsubmit {
+    background: #b4192d;
+    border: 0px;
+    margin: 10px 0;
+    color: #fff;
+    padding: 9px 15px;
+}
+footer {
+	color: #fff;
+	padding: 20px 0;
+}
+@media all and (max-width: 768px){
+	.post-image {
+    padding-bottom: 20px;
+	}
+	.download-link a {
+	    width: 200px;
+	}
+	header {
+    margin-bottom: 20px;
+	}
+
+	.dropdown-menu {
+	width: 300px;
+	left: -207px;
+	top: 55px;
+	}
+
+}
