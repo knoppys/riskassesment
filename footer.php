@@ -3,7 +3,9 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-md-12">
-						<?php echo get_field('footer', 2); ?>
+						<?php if (!is_page(2)) {
+							 echo get_field('footer', 2);
+						} ?>
 					</div>
 				</div>
 			</div>

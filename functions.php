@@ -7,13 +7,21 @@ add_action('admin_head', 'admin_style');
 
 function admin_style() {
   echo '<style>
-   .documentation li {
-    list-style: initial;
-}
-
-.documentation ul {
-    margin: 20px;
-}
+  	#wp-admin-bar-comments, #wp-admin-bar-new-content, #wp-admin-bar-updates {
+	    display: none;
+	}
+	.documentation li {
+		list-style: initial;
+	}
+	.documentation ul {
+	    margin: 20px;
+	}
+	li.wp-not-current-submenu.wp-menu-separator {
+	    display: none;
+	}
+	div#contextual-help-link-wrap {
+	    display: none;
+	}
   </style>';
 }
 
@@ -80,211 +88,6 @@ function custom_excerpt_length( $length ) {
 add_filter( 'excerpt_length', 'custom_excerpt_length', 999 );
 
 
-/**
- * Class Name: wp_bootstrap_navwalker
- * GitHub URI: https://github.com/twittem/wp-bootstrap-navwalker
- * Description: A custom WordPress nav walker class to implement the Bootstrap 3 navigation style in a custom theme using the WordPress built in menu manager.
- * Version: 2.0.4
- * Author: Edward McIntyre - @twittem
- * License: GPL-2.0+
- * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
- */
-
-class wp_bootstrap_navwalker extends Walker_Nav_Menu {
-
-	/**
-	 * @see Walker::start_lvl()
-	 * @since 3.0.0
-	 *
-	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param int $depth Depth of page. Used for padding.
-	 */
-	public function start_lvl( &$output, $depth = 0, $args = array() ) {
-		$indent = str_repeat( "\t", $depth );
-		$output .= "\n$indent<ul role=\"menu\" class=\" dropdown-menu\">\n";
-	}
-
-	/**
-	 * @see Walker::start_el()
-	 * @since 3.0.0
-	 *
-	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param object $item Menu item data object.
-	 * @param int $depth Depth of menu item. Used for padding.
-	 * @param int $current_page Menu item ID.
-	 * @param object $args
-	 */
-	public function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
-		$indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
-
-		/**
-		 * Dividers, Headers or Disabled
-		 * =============================
-		 * Determine whether the item is a Divider, Header, Disabled or regular
-		 * menu item. To prevent errors we use the strcasecmp() function to so a
-		 * comparison that is not case sensitive. The strcasecmp() function returns
-		 * a 0 if the strings are equal.
-		 */
-		if ( strcasecmp( $item->attr_title, 'divider' ) == 0 && $depth === 1 ) {
-			$output .= $indent . '<li role="presentation" class="divider">';
-		} else if ( strcasecmp( $item->title, 'divider') == 0 && $depth === 1 ) {
-			$output .= $indent . '<li role="presentation" class="divider">';
-		} else if ( strcasecmp( $item->attr_title, 'dropdown-header') == 0 && $depth === 1 ) {
-			$output .= $indent . '<li role="presentation" class="dropdown-header">' . esc_attr( $item->title );
-		} else if ( strcasecmp($item->attr_title, 'disabled' ) == 0 ) {
-			$output .= $indent . '<li role="presentation" class="disabled"><a href="#">' . esc_attr( $item->title ) . '</a>';
-		} else {
-
-			$class_names = $value = '';
-
-			$classes = empty( $item->classes ) ? array() : (array) $item->classes;
-			$classes[] = 'menu-item-' . $item->ID;
-
-			$class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args ) );
-
-			if ( $args->has_children )
-				$class_names .= ' dropdown';
-
-			if ( in_array( 'current-menu-item', $classes ) )
-				$class_names .= ' active';
-
-			$class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
-
-			$id = apply_filters( 'nav_menu_item_id', 'menu-item-'. $item->ID, $item, $args );
-			$id = $id ? ' id="' . esc_attr( $id ) . '"' : '';
-
-			$output .= $indent . '<li' . $id . $value . $class_names .'>';
-
-			$atts = array();
-			$atts['title']  = ! empty( $item->title )	? $item->title	: '';
-			$atts['target'] = ! empty( $item->target )	? $item->target	: '';
-			$atts['rel']    = ! empty( $item->xfn )		? $item->xfn	: '';
-
-			// If item has_children add atts to a.
-			if ( $args->has_children && $depth === 0 ) {
-				$atts['href']   		= '#';
-				$atts['data-toggle']	= 'dropdown';
-				$atts['class']			= 'dropdown-toggle';
-				$atts['aria-haspopup']	= 'true';
-			} else {
-				$atts['href'] = ! empty( $item->url ) ? $item->url : '';
-			}
-
-			$atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args );
-
-			$attributes = '';
-			foreach ( $atts as $attr => $value ) {
-				if ( ! empty( $value ) ) {
-					$value = ( 'href' === $attr ) ? esc_url( $value ) : esc_attr( $value );
-					$attributes .= ' ' . $attr . '="' . $value . '"';
-				}
-			}
-
-			$item_output = $args->before;
-
-			/*
-			 * Glyphicons
-			 * ===========
-			 * Since the the menu item is NOT a Divider or Header we check the see
-			 * if there is a value in the attr_title property. If the attr_title
-			 * property is NOT null we apply it as the class name for the glyphicon.
-			 */
-			if ( ! empty( $item->attr_title ) )
-				$item_output .= '<a'. $attributes .'><span class="glyphicon ' . esc_attr( $item->attr_title ) . '"></span>&nbsp;';
-			else
-				$item_output .= '<a'. $attributes .'>';
-
-			$item_output .= $args->link_before . apply_filters( 'the_title', $item->title, $item->ID ) . $args->link_after;
-			$item_output .= ( $args->has_children && 0 === $depth ) ? ' <span class="caret"></span></a>' : '</a>';
-			$item_output .= $args->after;
-
-			$output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
-		}
-	}
-
-	/**
-	 * Traverse elements to create list from elements.
-	 *
-	 * Display one element if the element doesn't have any children otherwise,
-	 * display the element and its children. Will only traverse up to the max
-	 * depth and no ignore elements under that depth.
-	 *
-	 * This method shouldn't be called directly, use the walk() method instead.
-	 *
-	 * @see Walker::start_el()
-	 * @since 2.5.0
-	 *
-	 * @param object $element Data object
-	 * @param array $children_elements List of elements to continue traversing.
-	 * @param int $max_depth Max depth to traverse.
-	 * @param int $depth Depth of current element.
-	 * @param array $args
-	 * @param string $output Passed by reference. Used to append additional content.
-	 * @return null Null on failure with no changes to parameters.
-	 */
-	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
-        if ( ! $element )
-            return;
-
-        $id_field = $this->db_fields['id'];
-
-        // Display this element.
-        if ( is_object( $args[0] ) )
-           $args[0]->has_children = ! empty( $children_elements[ $element->$id_field ] );
-
-        parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
-    }
-
-	/**
-	 * Menu Fallback
-	 * =============
-	 * If this function is assigned to the wp_nav_menu's fallback_cb variable
-	 * and a manu has not been assigned to the theme location in the WordPress
-	 * menu manager the function with display nothing to a non-logged in user,
-	 * and will add a link to the WordPress menu manager if logged in as an admin.
-	 *
-	 * @param array $args passed from the wp_nav_menu function.
-	 *
-	 */
-	public static function fallback( $args ) {
-		if ( current_user_can( 'manage_options' ) ) {
-
-			extract( $args );
-
-			$fb_output = null;
-
-			if ( $container ) {
-				$fb_output = '<' . $container;
-
-				if ( $container_id )
-					$fb_output .= ' id="' . $container_id . '"';
-
-				if ( $container_class )
-					$fb_output .= ' class="' . $container_class . '"';
-
-				$fb_output .= '>';
-			}
-
-			$fb_output .= '<ul';
-
-			if ( $menu_id )
-				$fb_output .= ' id="' . $menu_id . '"';
-
-			if ( $menu_class )
-				$fb_output .= ' class="' . $menu_class . '"';
-
-			$fb_output .= '>';
-			$fb_output .= '<li><a href="' . admin_url( 'nav-menus.php' ) . '">Add a menu</a></li>';
-			$fb_output .= '</ul>';
-
-			if ( $container )
-				$fb_output .= '</' . $container . '>';
-
-			echo $fb_output;
-		}
-	}
-}
-
 /*************************
 Remove those peski emojis
 *************************/
@@ -329,26 +132,66 @@ function ilc_custom_login() {
 /**********************************************
 Remove the default WP Admin Pages not required
 ***********************************************/
-function remove_menus(){
-  
-  remove_menu_page( 'index.php' ); 
-  remove_menu_page( 'edit.php' );                  
-  remove_menu_page( 'edit-comments.php' );
-  remove_menu_page( 'themes.php' );
-  remove_menu_page( 'plugins.php' );
-  remove_menu_page( 'tools.php' );
-  remove_menu_page( 'options-general.php' );
-  remove_menu_page( 'admin.php?page=wpcf7' );
-  remove_menu_page( 'edit.php?post_type=acf' );  
-}
-add_action( 'admin_menu', 'remove_menus' );
-//now remove those created by plugins
-function wpse_136058_remove_menu_pages() {
+	function remove_menus(){
+	  
+		remove_menu_page( 'index.php' ); 
+		remove_menu_page( 'edit.php' );                  
+		remove_menu_page( 'edit-comments.php' );
+		remove_menu_page( 'themes.php' );
+		remove_menu_page( 'plugins.php' );
+		remove_menu_page( 'widgets.php' );
+		remove_menu_page( 'tools.php' );
+		remove_menu_page( 'options-general.php' );
+		remove_menu_page( 'admin.php?page=wpcf7' );
+		remove_menu_page( 'edit.php?post_type=acf' ); 
 
-    remove_menu_page( 'edit.php?post_type=acf' );
-    remove_menu_page( 'wpcf7' );
-}
-add_action( 'admin_init', 'wpse_136058_remove_menu_pages' );
+	  //Whilst were in the admin_menu, 
+
+		//remove some of the roles so as not to confuse things
+		global $wp_roles; 
+		$roles_to_remove = array('contributor', 'author', 'editor');
+
+		foreach ($roles_to_remove as $role) {
+			if (isset($wp_roles->roles[$role])) {
+			    $wp_roles->remove_role($role);
+			}
+		}
+
+		//rename the subscriber role to Employee
+		if ( ! isset( $wp_roles ) )
+	        $wp_roles = new WP_Roles();    
+	    	$wp_roles->roles['subscriber']['name'] = 'Employee';
+
+
+	}
+	add_action( 'admin_menu', 'remove_menus' );
+
+	//now remove those created by plugins
+	function wpse_136058_remove_menu_pages() {
+
+	    remove_menu_page( 'edit.php?post_type=acf' );
+	    remove_menu_page( 'wpcf7' );
+	}
+	add_action( 'admin_init', 'wpse_136058_remove_menu_pages' );
+
+	function custom_menu_order($menu_ord) {
+	    if (!$menu_ord) return true;
+	     
+	    return array(     
+	        
+	        'edit.php?post_type=documents', // Posts
+	        'users.php', // Users	        
+	        'edit.php?post_type=page', // Posts
+	        'upload.php', // Media
+	        'separator2', // First separator
+	        'separator1', // First separator
+	        'separator3', // First separator
+	        
+	    );
+	}
+	add_filter('custom_menu_order', 'custom_menu_order'); // Activate custom_menu_order
+	add_filter('menu_order', 'custom_menu_order');
+
 
 /**********************************************
 Documents CPT
@@ -461,36 +304,46 @@ Hide that pesky admin bar to all but the admins
 add_filter('show_admin_bar', '__return_false');
 
 
-
 /*************************
-Redirect logged in users to the documents archive
+Refer failed login atempts back to the home page
 *************************/
-function add_login_check()
-{
-    if ( is_user_logged_in() && is_page(2) ) {
-    	$documents = get_post_type_archive_link( 'documents' );
-		wp_redirect ($documents);        
-        exit;
-    }
-}
 
-add_action('wp', 'add_login_check');
+function custom_login_failed( $username ){
 
-/*************************
-Refer failed login atempts 
-back to the home page
-*************************/
-add_action( 'wp_login_failed', 'custom_login_failed' );
-function custom_login_failed( $username )
-{
     $referrer = wp_get_referer();
-
-    if ( $referrer && ! strstr($referrer, 'wp-login') && ! strstr($referrer,'wp-admin') )
-    {
+    if ( $referrer && ! strstr($referrer, 'wp-login') && ! strstr($referrer,'wp-admin') )    {
         wp_redirect( add_query_arg('login', 'failed', $referrer) );
         exit;
     }
 }
+add_action( 'wp_login_failed', 'custom_login_failed' );
+
+
+/*************************
+Redirect Non-logged in users to the home page for authentication
+*************************/
+function global_auth(){
+	if( ( !is_page(2) ) ) {
+        if ( !is_user_logged_in() ) {
+            wp_redirect( site_url() );
+            exit();
+        }
+    }
+}
+
+add_action( 'template_redirect', 'global_auth');
+
+
+/*************************
+Send employees over to the documents archive if they try to login to the dashboard
+*************************/
+function blockusers_init() {
+	if ( is_admin() && ! current_user_can( 'administrator' ) && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+		wp_redirect( get_post_type_archive_link('documents') );
+	exit;
+	}
+}
+add_action( 'init', 'blockusers_init' );
 
 /*************************
 Add a page for documentation
@@ -500,9 +353,9 @@ function wpdocs_register_my_custom_menu_page() {
         __( 'Documentation' ),
         'Documentation',
         'manage_options',
-        'myplugin/myplugin-admin.php',
+        'documentation.php',
         'documentation_callback',
-        '',
+        'dashicons-welcome-learn-more',
         100
     );
 }
@@ -510,14 +363,20 @@ add_action( 'admin_menu', 'wpdocs_register_my_custom_menu_page' );
 
 function documentation_callback(){
 	echo '
-	<div class="documentation">
-		<h2>Index</h2>
+	&nbsp;
+<div class="documentation">
+<h2>Index</h2>
 <ol>
  	<li>Document Management
 <ol>
  	<li>Adding a new document</li>
  	<li>Editing a current document</li>
  	<li>Bulk uploads</li>
+</ol>
+</li>
+ 	<li>Employee Management
+<ol>
+ 	<li>Adding new employee</li>
 </ol>
 </li>
  	<li>Menus
@@ -554,13 +413,30 @@ function documentation_callback(){
  	<li>Select <strong>Add New</strong> located near the top of the screen.</li>
  	<li>From here you can drop multiple files onto the screen or use the browser uploader to upload all of your files. You can also edit the document titles and metas.</li>
 </ul>
-<strong>2. WordPress Menu</strong>
+<strong>2. Employee Management: </strong>
+
+<strong>Adding a new employee:</strong> To list all registered employees navigate to <strong>Users &gt; All Users</strong> from the left hand menu in the WP Admin.
+<ul>
+ 	<li>To add a new employee click <strong>Add New </strong>near the top of the admin screen.</li>
+ 	<li>Fill out the user fields such as Username, Email, First and Last names.</li>
+ 	<li>Click <strong>Show Password</strong> to view or change the users password.</li>
+ 	<li>Select the checkbox to email your new user with the details about their account.</li>
+ 	<li>You can then choose to register your new user as a new Employee or Site Administrator.</li>
+</ul>
+<strong>Change an employee or administrator password.</strong>
+<ul>
+ 	<li>To update a users details navigate to <strong>Users &gt; All Users</strong> from the left hand menu in the WP Admin.</li>
+ 	<li>Hover the username you wish to edit and click <strong>Edit</strong>.</li>
+ 	<li>From here you can edit all this users profile fields.</li>
+ 	<li>To revoke a users access you will need to delete the user manaually from the <strong>User List screen</strong>.</li>
+</ul>
+<strong>3. WordPress Menu</strong>
 
 The website navigation is split into two parts:
 <ol>
  	<li>The "Primary" Menu: Links displayed under "Navigation".
 <ol>
- 	<li>These links can be edited directly from <strong>Appearance &gt; Menus &gt; Primary Menu</strong>.</li>
+ 	<li>As you add pages to the site, they will appear under the <strong>Navigation</strong> title in the main menu.</li>
 </ol>
 </li>
  	<li>The "Document Types" Menu: Links displayed under "Document Types".
@@ -569,9 +445,25 @@ The website navigation is split into two parts:
 </ol>
 </li>
 </ol>
-<strong>3. Website Footer Content</strong>
+<strong>4. Website Footer Content</strong>
 
 You can edit the websites footer content from the Home Page edit screen. Navigate to <strong>Pages &gt; All Pages &gt; Home</strong> and select <strong>Edit. </strong>
-	</div>
-	';
+
+</div>';
+}
+
+add_action('wp_dashboard_setup', 'my_custom_dashboard_widgets');
+function my_custom_dashboard_widgets() {
+global $wp_meta_boxes;
+
+wp_add_dashboard_widget('custom_users_link', 'Welcome', 'custom_dashboard_help');
+}
+
+function custom_dashboard_help() {
+echo '<h3>Welcome to your Dashboard</h3>';
+echo '<p>For help and support with your website and its content or users, you can find documentation <a href="admin.php?page=myplugin%2Fmyplugin-admin.php" target="_blank">Here</a>.</p>
+	<p>If you require additional support, please do not hesitate to contact one of our team at Ellison Marketing.</p>
+	<h3>Tel: 01978 265807<br>
+		Email: lucy@ellosonmarketing.co.uk<br>
+		</h3>';
 }

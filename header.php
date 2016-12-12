@@ -27,13 +27,16 @@ if (!is_page('home')) { ?>
 					  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					    Menu  <i class="fa fa-bars"></i>
 					  </button>
-					  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					  	<a class="dropdown-item drop-down-header"><i class="fa fa-bars"></i>Navigation</a>
-					    <?php //The page links from the Primary menu if there are any	
-					    wp_nav_menu('primary');
+					  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">				  	
+						<a class="dropdown-item drop-down-header"><i class="fa fa-bars"></i>Navigation</a>			  	
+					  	<?php 
+					  	//The page links from the Primary menu if there are any	
+					    $args = array('fallback_cb' => false, 'theme_location' => 'primary');
+					    wp_nav_menu($args);
 					    ?>    
-					    <div class="dropdown-divider"></div>
+					    <div class="dropdown-divider"></div>						
 					    <a class="dropdown-item drop-down-header"><i class="fa fa-file-text"></i>Document Types</a>
+					    <a class="dropdown-item" href="<?php echo get_post_type_archive_link('documents'); ?>">All Documents</a>
 					    <?php
 					    //The list of document categories and links to their archive.
 					    $terms = get_terms( 'document_taxonomy' );
@@ -43,8 +46,7 @@ if (!is_page('home')) { ?>
 							        echo '<a class="dropdown-item" href="'.esc_url( $term_link ).'">' . $term->name . '</a>';
 							        
 							    }   
-							}
-							//var_dump($terms);
+							}							
 					    ?>
 						<div class="dropdown-divider"></div>
 					    <a class="dropdown-item logout" href="<?php echo wp_logout_url(home_url()); ?>"><i class="fa fa-sign-out"></i>Logout</a>
